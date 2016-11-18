@@ -3,7 +3,7 @@
 *Run GUI applications in Docker with the same client([Xpra](https://xpra.org/)) on Windows, GNU/Linux, MacOS or web-browser over ssh or tcp.*
 
 **(clickable!)**
-[![img/demo.jpg](img/demo.jpg)](https://github.com/JAremko/docker-x11-bridge/raw/master/img/demoHD.jpg)
+[![img/demo.jpg](https://github.com/JAremko/docker-x11-bridge/raw/master/img/demo.jpg)](https://github.com/JAremko/docker-x11-bridge/raw/master/img/demoHD.jpg)
 
 ### Try It!
 ``` bash
