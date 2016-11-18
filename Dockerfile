@@ -62,7 +62,7 @@ ENV SHELL="/bin/bash"        \
     XORG_DPI="96"            \
     MODE="html"
 
-EXPOSE 22 8080 $XPRA_HTML_BIND_PORT
+EXPOSE $SSHD_PORT $XPRA_TCP_PORT
 
 ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/run"]
 # Grant access to those who can mount the X11 volume
