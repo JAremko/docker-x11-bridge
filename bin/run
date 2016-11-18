@@ -7,7 +7,7 @@ chmod 600 -R "/root/.ssh/"
 case "$MODE" in
     'debug')
         echo "Starting in the debug mode..."
-        bash debug_mode
+        bash debug_mode "$@"
         ;;
     'html')
         echo   "Starting in the =INSECURE= web browser mode."
@@ -29,7 +29,7 @@ case "$MODE" in
         echo   "use http://IP:PORT/index.html?password=<XPRA_PASSWORD> to connect."
         echo   "Server's port is set by XPRA_TCP_PORT environment variable."
         echo   "To set encoding, full-screen mode etc. Use http://IP:PORT/connect.html"
-        bash html_mode
+        bash html_mode  "$@"
         ;;
     'tcp')
         echo   "Starting in the =INSECURE= tcp mode."
@@ -49,11 +49,11 @@ case "$MODE" in
         printf "The environment variable XPRA_PASSWORD should be set "
         printf "to the server's password.\n"
         echo   "Server's port is set by XPRA_TCP_PORT environment variable."
-        bash tcp_mode
+        bash tcp_mode  "$@"
         ;;
     'ssh')
         echo "Starting in the ssh mode..."
-        bash ssh_mode
+        bash ssh_mode  "$@"
         ;;
     *)
         echo "MODE variable specifies unknown run-mode!\nExiting..."

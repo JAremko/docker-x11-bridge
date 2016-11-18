@@ -26,4 +26,4 @@ xpra start $XPRA_DISPLAY\
      --mmap="${XPRA_MMAP}"\
      --encoding="${XPRA_ENCODING}"\
      -debug=all\
-     --start-child="xhost +"
+     --start-child="$@"

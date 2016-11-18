@@ -25,4 +25,4 @@ xpra start $XPRA_DISPLAY\
      --mdns=no\
      --mmap="${XPRA_MMAP}"\
      --encoding="${XPRA_ENCODING}"\
-     --start-child="xhost +"
+     --start-child="$@"

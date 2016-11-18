@@ -24,4 +24,4 @@ xpra start $XPRA_DISPLAY \
      --bind-tcp="0.0.0.0:${XPRA_TCP_PORT}"\
      --html=off\
      --auth=env\
-     --start-child="xhost +"
+     --start-child="$@"
