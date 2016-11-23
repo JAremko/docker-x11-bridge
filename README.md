@@ -30,3 +30,4 @@ Then attach to the Xpra server via cmd tool or Xpra's GUI app:
  - With Windows client you'll need [`Pageant`](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) you can convert your rsa keys to `Pageant`'s format with [`PuTTYgen`](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
  - GUI app in your image may require`libGL.so.1` (provided by libgl1-mesa-glx on Ubuntu)
  - It is good idea to use [ssl proxy](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) or mount a certificate (see Xpra start-up message) if you want to use tcp or html mode beyond local network
+ - Current Xpra version have an issue with applications that have window (frame) size rounding enabled. In Emacs you can disable it by setting `frame-resize-pixelwise` to `t` and update already created frames(if any) with `x-wm-set-size-hint`
