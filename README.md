@@ -9,8 +9,8 @@
 ``` bash
 docker run -d --name x11-bridge -e MODE="html" -p 10000:10000 -e XPRA_DISPLAY=:14 \
 -e XPRA_PASSWORD=<PASSWORD> jare/x11-bridge
-docker run -d --name emacs-1 --volumes-from x11-bridge -e DISPLAY=:14 jare/docker-emacs emacs
-docker run -d --name emacs-2 --volumes-from x11-bridge -e DISPLAY=:14 jare/docker-emacs emacs
+docker run -d --name emacs-1 --volumes-from x11-bridge -e DISPLAY=:14 jare/emacs emacs
+docker run -d --name emacs-2 --volumes-from x11-bridge -e DISPLAY=:14 jare/emacs emacs
 ```
 Then visit `http://localhost:10000/index.html?encoding=png&password=<PASSWORD>`
 
@@ -18,8 +18,8 @@ Then visit `http://localhost:10000/index.html?encoding=png&password=<PASSWORD>`
 ``` bash
 docker run -d --rm --name x11-bridge -e MODE="ssh" -p 22:22 -v ~/.ssh/pub_rsa:/etc/pub-keys/me.pub \
 -e XPRA_DISPLAY=:14 jare/x11-bridge
-docker run -d --name emacs-1 --volumes-from x11-bridge -e DISPLAY=:14 jare/docker-emacs emacs
-docker run -d --name emacs-2 --volumes-from x11-bridge -e DISPLAY=:14 jare/docker-emacs emacs
+docker run -d --name emacs-1 --volumes-from x11-bridge -e DISPLAY=:14 jare/emacs emacs
+docker run -d --name emacs-2 --volumes-from x11-bridge -e DISPLAY=:14 jare/emacs emacs
 ```
 Then attach to the Xpra server via cmd tool or Xpra's GUI app:
 `xpra attach --encoding=rgb --ssh="ssh -o StrictHostKeyChecking=no -p 22" ssh:root@localhost:14`
