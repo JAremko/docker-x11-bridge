@@ -37,7 +37,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/main" \
 # ssh
     && mkdir -p /var/run/sshd \
     && chmod 0755 /var/run/sshd \
-    && echo "PasswordAuthentication no" >> "/etc/ssh/sshd_config" \
+
     && mkdir -p "/root/.ssh/" \
     && chmod 700 "/root/.ssh/" \
     && rc-update add sshd \
