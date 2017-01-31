@@ -5,29 +5,28 @@ MAINTAINER JAremko <w3techplaygound@gmail.com>
 ENV XPRA_URL="https://www.xpra.org/dists/xenial/main/binary-amd64/\
 xpra_1.0.1-r14723-1_amd64.deb"
 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/main" \
-    >> /etc/apk/repositories \
-    && echo "http://nl.alpinelinux.org/alpine/edge/testing" \
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
     && echo "http://nl.alpinelinux.org/alpine/edge/community" \
     >> /etc/apk/repositories \
-    apk --update add \
+    && apk --update add \
     bash \
     dbus-x11 \
     fontconfig \
     libgcc \
+    libffi \
     openrc \
     openssh \
-    openssl-dev \
+    openssl \
     py-dbus \
     py-gst0.10 \
-    python-dev \
     python2 \
     xpra \
     && apk --update add --virtual build-deps \
     build-base \
     bzip2 \
     curl \
+    libffi-dev \
     libstdc++ \
     openssl-dev \
     py2-pip \
@@ -47,15 +46,23 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/main" \
     && /etc/init.d/sshd stop > /dev/null 2>&1 \
 
 # add missing Xpra files
+    && mkdir -p /var/run/xpra \
     && cd /tmp/ \
     && curl "${XPRA_URL}" > xpra.deb \
     && ar x xpra.deb \
     && tar xJf ./data.tar.xz \
-    && mv ./usr/share/xpra/www/include /usr/share/xpra/www/ \
+    && mv ./usr/share/xpra/www/ /usr/share/xpra/www/ \
     && rm -rf /tmp/* \
 
 # Python stuff for Xpra
-    && pip install pycrypto websockify \
+    && pip install \
+    cffi \
+    gi \
+    pycrypto \
+    pytools \
+    six \
+    websockify \
+    xxhash \
     && mv /usr/lib/python2.7/site-packages/ \
     /usr/lib/python2.7/~site-packages/ \
     && apk del build-deps \
