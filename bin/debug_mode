@@ -22,6 +22,7 @@ xpra start $XPRA_DISPLAY\
      --pulseaudio=no\
      --speaker=disabled\
      --mdns=no\
+     --csc-modules=swscale\
      --dpi="${XPRA_DPI}"\
      --mmap="${XPRA_MMAP}"\
      --encoding="${XPRA_ENCODING}"\

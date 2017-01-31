@@ -23,6 +23,7 @@ xpra start $XPRA_DISPLAY\
      --compress="${XPRA_COMPRESS}"\
      --keyboard-sync="${XPRA_KEYBOARD_SYNC}"\
      --mdns=no\
+     --csc-modules=swscale\
      --mmap="${XPRA_MMAP}"\
      --encoding="${XPRA_ENCODING}"\
      --start-child="$@"

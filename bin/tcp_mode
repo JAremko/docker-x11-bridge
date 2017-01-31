@@ -20,6 +20,7 @@ xpra start $XPRA_DISPLAY \
      --compress="${XPRA_COMPRESS}"\
      --keyboard-sync="${XPRA_KEYBOARD_SYNC}"\
      --mdns=no\
+     --csc-modules=swscale\
      --encoding="${XPRA_ENCODING}"\
      --bind-tcp="0.0.0.0:${XPRA_TCP_PORT}"\
      --html=off\

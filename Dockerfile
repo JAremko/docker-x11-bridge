@@ -2,8 +2,7 @@ FROM alpine:edge
 
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
-ENV XPRA_URL="https://www.xpra.org/dists/xenial/main/binary-amd64/\
-xpra_1.0.1-r14723-1_amd64.deb"
+ENV XPRA_URL="https://www.xpra.org/dists/yakkety/main/binary-amd64/xpra_1.0.1-r14723-1_amd64.deb"
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -20,6 +19,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     openssl \
     py-dbus \
     py-gst0.10 \
+    py-libxml2 \
     python2 \
     xpra \
     && apk --update add --virtual build-deps \
@@ -54,7 +54,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     && mv ./usr/share/xpra/www/ /usr/share/xpra/www/ \
     && rm -rf /tmp/* \
 
-# Python stuff for Xpra
+# python stuff for Xpra
     && pip install \
     cffi \
     gi \
@@ -75,17 +75,18 @@ VOLUME /tmp/.X11-unix
 
 COPY bin/* /usr/local/bin/
 
-ENV SHELL="/bin/bash"        \
-    SSHD_PORT="22"           \
-    XPRA_DISPLAY=":14"       \
-    XPRA_SHARING="yes"       \
-    XPRA_ENCODING="rgb"      \
-    XPRA_MMAP="yes"          \
-    XPRA_KEYBOARD_SYNC="yes" \
-    XPRA_COMPRESS="0"        \
-    XPRA_TCP_PORT="10000"    \
-    XPRA_DPI="0"             \
-    XORG_DPI="96"            \
+ENV SHELL="/bin/bash"         \
+    SSHD_PORT="22"            \
+    XPRA_DISPLAY=":14"        \
+    XPRA_SHARING="yes"        \
+    XPRA_ENCODING="rgb"       \
+    XPRA_MMAP="yes"           \
+    XPRA_KEYBOARD_SYNC="yes"  \
+    XPRA_COMPRESS="0"         \
+    XPRA_TCP_PORT="10000"     \
+# for html mode XPRA_DPI="96" \
+    XPRA_DPI="0"              \
+    XORG_DPI="96"             \
     MODE="html"
 
 EXPOSE $SSHD_PORT $XPRA_TCP_PORT
