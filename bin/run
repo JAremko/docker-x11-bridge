@@ -1,62 +1,102 @@
 #!/bin/bash
-chmod 1777 /tmp/.X11-unix
+
+# Create group
+egrep -i "^${GNAME}" /etc/group;
+if [ $? -ne 0 ]; then
+  echo "${GNAME}:x:${GID}:${UNAME}" >> /etc/group
+fi
+
+# Create user
+if ! id "${UNAME}" >/dev/null 2>&1; then
+  echo "${UNAME}:x:${UID}:${GID}:${UNAME},,,:${UHOME}:${SHELL}" >> /etc/passwd
+  echo "${UNAME}::17032:0:99999:7:::" >> /etc/shadow
+fi
+
+# Create HOME dir
+if [ -d "${UHOME}" ]
+then
+  home_owner="$(stat --format '%U' ${UHOME})"
+  if [ $(id -u ${UNAME}) -ne $(id -u ${home_owner}) ]; then
+    chown "${UID}":"${GID}" -R ${UHOME}
+  fi
+else
+  mkdir -p "${UHOME}"
+  chown "${UID}":"${GID}" "${UHOME}"
+fi
+
+# SSH
 sed -i "s/^Port .*$/Port ${SSHD_PORT}/" "/etc/ssh/sshd_config"
-find /etc/pub-keys -type f -name *.pub -exec cat "{}" >> /root/.ssh/authorized_keys \;
-chmod 600 -R "/root/.ssh/"
+mkdir -p "${UHOME}/.ssh"
+find /etc/pub-keys -type f -name *.pub -exec cat "{}" >> "${UHOME}/.ssh/authorized_keys" \;
+chmod 600 -R "${UHOME}/.ssh"
+chmod 700 "${UHOME}/.ssh"
+chown "${UID}":"${GID}" -R "${UHOME}/.ssh" /var/run/xpra
+
+chmod 1777 /tmp/.X11-unix
+Xorg\
+  +extension RANDR\
+  +extension RENDER\
+  -config /etc/xpra/xorg.conf\
+  -dpi $XORG_DPI\
+  -logfile /tmp/Xorg.log\
+  -nolisten tcp\
+  -noreset\
+  -xinerama &
 
 case "$MODE" in
-    'debug')
-        echo "Starting in the debug mode..."
-        bash debug_mode "$@"
-        ;;
-    'html')
-        echo   "Starting in the =INSECURE= web browser mode."
-        printf '=%.0s' {1..70}
-        echo   ""
-        echo   "WARNING!!!!!"
-        echo   "This mode doesn't use encryption or TLS."
-        echo   "Please use it behind Docker's or external firewall."
-        echo   "If you want to use it a beyond local network:"
-        printf "  - Make sure that the running container "
-        printf "doesn't have privileges and doesn't mount sensitive data.\n"
-        printf "  - Use https (tls) proxy in-front of the server to secure the channel."
-        echo   "  You can use docker based proxy like:"
-        echo   "https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion"
-        printf '=%.0s' {1..70}
-        echo   ""
-        printf "The environment variable XPRA_PASSWORD should be set "
-        printf "to the server's password.\n"
-        echo   "use http://IP:PORT/index.html?password=<XPRA_PASSWORD> to connect."
-        echo   "Server's port is set by XPRA_TCP_PORT environment variable."
-        echo   "To set encoding, full-screen mode etc. Use http://IP:PORT/connect.html"
-        bash html_mode  "$@"
-        ;;
-    'tcp')
-        echo   "Starting in the =INSECURE= tcp mode."
-        printf '=%.0s' {1..70}
-        echo   ""
-        echo   "WARNING!!!!!"
-        echo   "This mode doesn't use encryption or TLS."
-        echo   "Please use it behind Docker's or external firewall."
-        echo   "If you want to use it a beyond local network:"
-        printf "  - Make sure that the running container "
-        printf "doesn't have privileges and doesn't mount sensitive data.\n"
-        printf "  - Use https (tls) proxy in-front of the server to secure the channel."
-        echo   "  You can use docker based proxy like:"
-        echo   "https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion"
-        printf '=%.0s' {1..70}
-        echo   ""
-        printf "The environment variable XPRA_PASSWORD should be set "
-        printf "to the server's password.\n"
-        echo   "Server's port is set by XPRA_TCP_PORT environment variable."
-        bash tcp_mode  "$@"
-        ;;
-    'ssh')
-        echo "Starting in the ssh mode..."
-        bash ssh_mode  "$@"
-        ;;
-    *)
-        echo "MODE variable specifies unknown run-mode!\nExiting..."
-        exit 1
-        ;;
+  'debug')
+      echo "Starting in the debug mode..."
+      /usr/sbin/sshd -Ded &
+      su-exec "${UNAME}" bash debug_mode "$@"
+      ;;
+  'html')
+      echo   "Starting in the =INSECURE= web browser mode."
+      printf '=%.0s' {1..70}
+      echo   ""
+      echo   "This mode doesn't use encryption or TLS."
+      echo   "Please use it behind Docker's or external firewall."
+      echo   "If you want to use it a beyond local network:"
+      printf "  - Make sure that the running container "
+      printf "doesn't have privileges and doesn't mount sensitive data.\n"
+      printf "  - Use https (tls) proxy in-front of the server to secure the channel."
+      echo   "  You can use docker based proxy like:"
+      echo   "https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion"
+      printf '=%.0s' {1..70}
+      echo   ""
+      printf "The environment variable XPRA_PASSWORD should be set "
+      printf "to the server's password.\n"
+      echo   "use http://IP:PORT/index.html?password=<XPRA_PASSWORD> to connect."
+      echo   "Server's port is set by XPRA_TCP_PORT environment variable."
+      echo   "To set encoding, full-screen mode etc. Use http://IP:PORT/connect.html"
+      su-exec "${UNAME}" bash html_mode "$@"
+      ;;
+  'tcp')
+      echo   "Starting in the =INSECURE= tcp mode."
+      printf '=%.0s' {1..70}
+      echo   ""
+      echo   "WARNING!!!!!"
+      echo   "This mode doesn't use encryption or TLS."
+      echo   "Please use it behind Docker's or external firewall."
+      echo   "If you want to use it a beyond local network:"
+      printf "  - Make sure that the running container "
+      printf "doesn't have privileges and doesn't mount sensitive data.\n"
+      printf "  - Use https (tls) proxy in-front of the server to secure the channel."
+      echo   "  You can use docker based proxy like:"
+      echo   "https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion"
+      printf '=%.0s' {1..70}
+      echo   ""
+      printf "The environment variable XPRA_PASSWORD should be set "
+      printf "to the server's password.\n"
+      echo   "Server's port is set by XPRA_TCP_PORT environment variable."
+      su-exec "${UNAME}" bash tcp_mode "$@"
+      ;;
+  'ssh')
+      echo "Starting in the ssh mode..."
+      /usr/sbin/sshd
+      su-exec "${UNAME}" bash ssh_mode "$@"
+      ;;
+  *)
+      echo "MODE variable specifies unknown run-mode!\nExiting..."
+      exit 1
+      ;;
 esac

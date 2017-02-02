@@ -2,94 +2,179 @@ FROM alpine:edge
 
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
-ENV XPRA_URL="https://www.xpra.org/dists/yakkety/main/binary-amd64/xpra_1.0.1-r14723-1_amd64.deb"
+# Kudos to @urzds for Xpra building example
+ENV XPRA_VERSION=1.0.1
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
     && echo "http://nl.alpinelinux.org/alpine/edge/community" \
     >> /etc/apk/repositories \
-    && apk --update add \
+# Deps
+    && apk --no-cache add \
     bash \
+    curl \
+    cython \
     dbus-x11 \
-    fontconfig \
-    libgcc \
-    libffi \
+    desktop-file-utils \
+    ffmpeg \
+    gst-plugins-base1 \
+    gst-plugins-good1 \
+    gstreamer1 \
+    libvpx \
+    libwebp \
+    libxcomposite \
+    libxdamage \
+    libxext \
+    libxfixes \
+    libxkbfile \
+    libxrandr \
+    libxtst \
+    musl-utils \
     openrc \
     openssh \
     openssl \
+    py-asn1 \
+    py-cffi \
+    py-cryptography \
     py-dbus \
-    py-gst0.10 \
-    py-libxml2 \
-    python2 \
-    xpra \
-    && apk --update add --virtual build-deps \
+    py-enum34 \
+    py-gobject3 \
+    py-gtk \
+    py-gtkglext \
+    py-idna \
+    py-ipaddress \
+    py-lz4 \
+    py-netifaces \
+    py-numpy \
+    py-pillow \
+    py-rencode \
+    py-six \
+    shared-mime-info \
+    x264 \
+    xf86-video-dummy \
+    xhost \
+    xorg-server \
+# Meta build-deps
+    && apk --no-cache add --virtual build-deps \
     build-base \
-    bzip2 \
-    curl \
-    libffi-dev \
-    libstdc++ \
-    openssl-dev \
+    git \
+    ffmpeg-dev \
+    flac-dev \
+    libc-dev \
+    libvpx-dev \
+    libwebp-dev \
+    libxcomposite-dev \
+    libxdamage-dev \
+    libxext-dev \
+    libxfixes-dev \
+    libxkbfile-dev \
+    libxrandr-dev \
+    libxtst-dev \
+    linux-headers \
+    opus-dev \
+    py-dbus-dev \
+    py-gtk-dev \
+    py-gtkglext-dev \
+    py-numpy-dev \
     py2-pip \
-    python2-dev \
-    tar \
-    xz \
-# ssh
+    python-dev \
+    which \
+    x264-dev \
+    x265-dev \
+    xvidcore-dev \
+# PIP
+    && pip install \
+    pycrypto \
+    websockify \
+    xxhash \
+# Xpra
+    && curl https://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz | tar -xJ \
+    && cd xpra-$XPRA_VERSION \
+    && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
+    >> etc/xpra/xorg.conf \
+    && python2 setup.py install \
+        --verbose \
+        --with-Xdummy \
+        --with-Xdummy_wrapper \
+        --with-bencode \
+        --with-clipboard \
+        --with-csc_swscale \
+        --with-cython_bencode \
+        --with-dbus \
+        --with-enc_ffmpeg \
+        --with-enc_x264 \
+        --with-gtk_x11 \
+        --with-pillow \
+        --with-server \
+        --with-vpx \
+        --with-vsock \
+        --with-webp \
+        --with-x11 \
+        --without-client \
+        --without-csc_cython \
+        --without-csc_libyuv \
+        --without-dec_avcodec2 \
+        --without-enc_x265 \
+        --without-enc_xvid \
+        --without-gtk2 \
+        --without-gtk3 \
+        --without-mdns \
+        --without-opengl \
+        --without-printing \
+        --without-sound \
+        --without-webcam \
+    && mkdir -p /var/run/xpra/ \
+    && cd ../.. \
+    && rm -fr xpra-$XPRA_VERSION \
+# su-exec
+    && git clone https://github.com/ncopa/su-exec.git /tmp/su-exec \
+    && cd /tmp/su-exec \
+    && make \
+    && chmod 770 su-exec \
+    && mv su-exec /usr/sbin/ \
+# Cleanup
+    && apk del build-deps \
+    && rm -rf /var/cache/* /tmp/* /var/log/* ~/.cache \
+    && mkdir -p /var/cache/apk \
+# SSH
     && mkdir -p /var/run/sshd \
     && chmod 0755 /var/run/sshd \
-
-    && mkdir -p "/root/.ssh/" \
-    && chmod 700 "/root/.ssh/" \
     && rc-update add sshd \
     && rc-status \
     && touch /run/openrc/softlevel \
     && /etc/init.d/sshd start > /dev/null 2>&1 \
-    && /etc/init.d/sshd stop > /dev/null 2>&1 \
-
-# add missing Xpra files
-    && mkdir -p /var/run/xpra \
-    && cd /tmp/ \
-    && curl "${XPRA_URL}" > xpra.deb \
-    && ar x xpra.deb \
-    && tar xJf ./data.tar.xz \
-    && mv ./usr/share/xpra/www/ /usr/share/xpra/www/ \
-    && rm -rf /tmp/* \
-
-# python stuff for Xpra
-    && pip install \
-    cffi \
-    gi \
-    pycrypto \
-    pytools \
-    six \
-    websockify \
-    xxhash \
-    && mv /usr/lib/python2.7/site-packages/ \
-    /usr/lib/python2.7/~site-packages/ \
-    && apk del build-deps \
-    && mv /usr/lib/python2.7/~site-packages/ \
-    /usr/lib/python2.7/site-packages/ \
-    && rm -rf /var/cache/* /tmp/* /var/log/* ~/.cache
+    && /etc/init.d/sshd stop > /dev/null 2>&1
 
 # docker run ... --volumes-from <ME> -e DISPLAY=<MY_DISPLAY> ... firefox
 VOLUME /tmp/.X11-unix
 
+# Mount <some_ssh_key>.pub in here to enable xpra via ssh
+VOLUME /etc/pub-keys
+
 COPY bin/* /usr/local/bin/
 
-ENV SHELL="/bin/bash"         \
-    SSHD_PORT="22"            \
-    XPRA_DISPLAY=":14"        \
-    XPRA_SHARING="yes"        \
-    XPRA_ENCODING="rgb"       \
-    XPRA_MMAP="yes"           \
-    XPRA_KEYBOARD_SYNC="yes"  \
-    XPRA_COMPRESS="0"         \
-    XPRA_TCP_PORT="10000"     \
-# for html mode XPRA_DPI="96" \
-    XPRA_DPI="0"              \
-    XORG_DPI="96"             \
-    MODE="html"
+ENV DISPLAY=":14"            \
+    MODE="html"              \
+    SHELL="/bin/bash"        \
+    SSHD_PORT="22"           \
+    XORG_DPI="96"            \
+    XPRA_COMPRESS="0"        \
+    XPRA_DPI="0"             \
+    XPRA_ENCODING="rgb"      \
+    XPRA_HTML_DPI="96"       \
+    XPRA_KEYBOARD_SYNC="yes" \
+    XPRA_MMAP="yes"          \
+    XPRA_SHARING="yes"       \
+    XPRA_TCP_PORT="10000"
+
+ENV GID="1000"         \
+    GNAME="xpra"       \
+    SHELL="/bin/bash"  \
+    UHOME="/home/xpra" \
+    UID="1000"         \
+    UNAME="xpra"
 
 EXPOSE $SSHD_PORT $XPRA_TCP_PORT
 
-ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/run"]
-CMD "xhost +"
+ENTRYPOINT ["/usr/local/bin/run"]
+CMD ["xhost +"]
