@@ -30,7 +30,10 @@ mkdir -p "${UHOME}/.ssh"
 find /etc/pub-keys -type f -name *.pub -exec cat "{}" >> "${UHOME}/.ssh/authorized_keys" \;
 chmod 600 -R "${UHOME}/.ssh"
 chmod 700 "${UHOME}/.ssh"
-chown "${UID}":"${GID}" -R "${UHOME}/.ssh" /var/run/xpra
+
+# Xpra mmap
+mkdir -p /tmp/spacemacs-mmap
+chown "${UID}":"${GID}" -R "${UHOME}/.ssh" /var/run/xpra /tmp/spacemacs-mmap
 
 chmod 1777 /tmp/.X11-unix
 Xorg\

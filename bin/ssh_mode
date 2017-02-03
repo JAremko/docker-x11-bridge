@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mkdir -p /tmp/spacemacs-mmap
-
 TMPDIR=/tmp/spacemacs-mmap xpra start $DISPLAY\
   --compress="${XPRA_COMPRESS}"\
   --dpi="${XPRA_DPI}"\

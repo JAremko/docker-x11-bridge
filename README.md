@@ -31,3 +31,5 @@ Then attach to the Xpra server via cmd tool or Xpra's GUI app:
  - GUI app in your image may require`libGL.so.1` (provided by libgl1-mesa-glx on Ubuntu) and font
  - It is good idea to use [ssl proxy](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) or mount a certificate (see Xpra start-up message) if you want to use tcp or html mode beyond local network
  - You can [modify the user](https://github.com/JAremko/docker-x11-bridge/blob/master/Dockerfile#L172)
+ - To use Xpra mmap(Linux): `docker run ... -v /tmp/spacemacs-mmap/:/tmp/spacemacs-mmap/ ... jare/x11-bridge` and attach with `TMPDIR=/tmp/spacemacs-mmap/ xpra attach --mmap=yes --encoding=rgb --ssh="ssh -o StrictHostKeyChecking=no -p 22" ssh:xpra@localhost:14`
+
