@@ -3,13 +3,14 @@ FROM alpine:edge
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=1.0.1
+ENV XPRA_VERSION=1.0.3
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
     && echo "http://nl.alpinelinux.org/alpine/edge/community" \
     >> /etc/apk/repositories \
 # Deps
+    && apk --no-cache upgrade \
     && apk --no-cache add \
     bash \
     curl \
@@ -80,7 +81,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     python-dev \
     which \
     x264-dev \
-    x265-dev \
     xvidcore-dev \
 # PIP
     && pip install \
