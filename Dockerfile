@@ -3,7 +3,7 @@ FROM alpine:edge
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=1.0.3
+ENV XPRA_VERSION=2.0
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -22,7 +22,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     gst-plugins-good1 \
     gstreamer1 \
     libvpx \
-    libwebp \
     libxcomposite \
     libxdamage \
     libxext \
@@ -63,7 +62,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     flac-dev \
     libc-dev \
     libvpx-dev \
-    libwebp-dev \
     libxcomposite-dev \
     libxdamage-dev \
     libxext-dev \
@@ -103,20 +101,18 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
         --with-dbus \
         --with-enc_ffmpeg \
         --with-enc_x264 \
+        --with-gtk2 \
+        --with-gtk_x11 \
         --with-gtk_x11 \
         --with-pillow \
         --with-server \
         --with-vpx \
         --with-vsock \
-        --with-webp \
         --with-x11 \
         --without-client \
-        --without-csc_cython \
         --without-csc_libyuv \
         --without-dec_avcodec2 \
         --without-enc_x265 \
-        --without-enc_xvid \
-        --without-gtk2 \
         --without-gtk3 \
         --without-mdns \
         --without-opengl \

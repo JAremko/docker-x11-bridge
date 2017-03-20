@@ -33,3 +33,5 @@ Then attach to the Xpra server via cmd tool or Xpra's GUI app:
  - You can [modify the user](https://github.com/JAremko/docker-x11-bridge/blob/master/Dockerfile#L172)
  - To use Xpra mmap(Linux): `docker run ... -v /tmp/spacemacs-mmap/:/tmp/spacemacs-mmap/ ... jare/x11-bridge` and attach with `TMPDIR=/tmp/spacemacs-mmap/ xpra attach --mmap=yes --encoding=rgb --ssh="ssh -o StrictHostKeyChecking=no -p 22" ssh:xpra@localhost:14`
 
+
+*Webcam and sound are currently disabled*
