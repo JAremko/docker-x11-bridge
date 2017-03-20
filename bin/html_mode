@@ -1,5 +1,4 @@
 #!/bin/bash
-
 xpra start $DISPLAY \
   --auth=env\
   --bind-tcp="0.0.0.0:${XPRA_TCP_PORT}"\
