@@ -3,7 +3,7 @@ FROM alpine:edge
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=1.0.4
+ENV XPRA_VERSION=2.0.1
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -57,6 +57,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
 # Meta build-deps
     && apk --no-cache add --virtual build-deps \
     build-base \
+    cython-dev \
     git \
     ffmpeg-dev \
     flac-dev \
@@ -102,7 +103,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
         --with-enc_ffmpeg \
         --with-enc_x264 \
         --with-gtk2 \
-        --with-gtk_x11 \
         --with-gtk_x11 \
         --with-pillow \
         --with-server \
@@ -150,9 +150,12 @@ VOLUME /etc/pub-keys
 COPY bin/* /usr/local/bin/
 
 ENV DISPLAY=":14"            \
-    MODE="html"              \
     SHELL="/bin/bash"        \
     SSHD_PORT="22"           \
+    START_XORG="yes"         \
+    XPRA_HTML="no"           \
+    XPRA_MODE="start"        \
+    XPRA_READONLY="no"       \
     XORG_DPI="96"            \
     XPRA_COMPRESS="0"        \
     XPRA_DPI="0"             \

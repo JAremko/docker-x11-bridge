@@ -1,15 +1,17 @@
 #!/bin/bash
-
-TMPDIR=/tmp/spacemacs-mmap xpra start $DISPLAY\
-  --auth=env\
-  --bind-tcp="0.0.0.0:${XPRA_TCP_PORT}"\
+TMPDIR=/tmp/spacemacs-mmap xpra $XPRA_MODE $DISPLAY\
   --compress="${XPRA_COMPRESS}"\
   --dpi="${XPRA_DPI}"\
   --encoding="${XPRA_ENCODING}"\
-  --html=off\
+  --html="${XPRA_HTML}"\
   --keyboard-sync="${XPRA_KEYBOARD_SYNC}"\
+  --microphone=no\
   --mmap="${XPRA_MMAP}"\
   --no-daemon\
+  --printing=no\
   --pulseaudio=no\
+  --readonly="${XPRA_READONLY}"\
   --sharing="${XPRA_SHARING}"\
-  --start-child="$@"
+  --speaker=no\
+  --start-child="$@"\
+  --webcam=no
