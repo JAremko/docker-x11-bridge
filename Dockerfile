@@ -3,7 +3,7 @@ FROM alpine
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=2.2.6
+ENV XPRA_VERSION=2.3.2
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -40,13 +40,11 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-cryptography \
     py-dbus \
     py-enum34 \
-    py-futures \
     py-gobject3 \
     py-gtk \
     py-gtkglext \
     py-idna \
     py-ipaddress \
-    py-lz4 \
     py-netifaces \
     py-numpy \
     py-pillow \
@@ -74,6 +72,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     libxrandr-dev \
     libxtst-dev \
     linux-headers \
+    lz4-dev \
     opus-dev \
     py-dbus-dev \
     py-gtk-dev \
@@ -86,6 +85,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xvidcore-dev \
 # PIP
     && pip install \
+    lz4 \
     pycrypto \
     websockify \
     xxhash \
@@ -121,6 +121,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
         --without-opengl \
         --without-printing \
         --without-sound \
+        --without-strict \
         --without-webcam \
     && mkdir -p /var/run/xpra/ \
     && cd ../.. \
