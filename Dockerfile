@@ -3,7 +3,7 @@ FROM alpine
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=2.0.1
+ENV XPRA_VERSION=2.2.6
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -18,9 +18,9 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     dbus-x11 \
     desktop-file-utils \
     ffmpeg \
-    gst-plugins-base1 \
-    gst-plugins-good1 \
-    gstreamer1 \
+    gst-plugins-base \
+    gst-plugins-good \
+    gstreamer \
     libvpx \
     libxcomposite \
     libxdamage \
@@ -29,6 +29,8 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     libxkbfile \
     libxrandr \
     libxtst \
+    lz4 \
+    lzo \
     musl-utils \
     openrc \
     openssh \
@@ -38,6 +40,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-cryptography \
     py-dbus \
     py-enum34 \
+    py-futures \
     py-gobject3 \
     py-gtk \
     py-gtkglext \
