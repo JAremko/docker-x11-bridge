@@ -28,6 +28,7 @@ docker run -d \
  jare/emacs emacs
 ```
 Then visit `http://localhost:10000/index.html?encoding=rgb32`
+See `http://localhost:10000/connect.html` for options
 
 ### Or via ssh:
 ``` bash
