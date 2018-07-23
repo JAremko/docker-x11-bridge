@@ -16,12 +16,8 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     && apk --no-cache add \
     bash \
     curl \
-    cython \
     dbus-x11 \
-    desktop-file-utils \
     ffmpeg \
-    gst-plugins-base \
-    gst-plugins-good \
     gstreamer \
     libvpx \
     libxcomposite \
@@ -33,7 +29,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     libxtst \
     lz4 \
     lzo \
-    musl-utils \
     openrc \
     openssh \
     openssl \
@@ -62,7 +57,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xorg-server \
 # Meta build-deps
     && apk --no-cache add --virtual build-deps \
-    alpine-sdk \
     autoconf \
     automake \
     build-base \
@@ -83,6 +77,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     libxtst-dev \
     linux-headers \
     lz4-dev \
+    musl-utils \
     opus-dev \
     py-dbus-dev \
     py-gtk-dev \
