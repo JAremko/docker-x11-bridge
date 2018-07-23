@@ -36,8 +36,8 @@ mkdir -p /tmp/spacemacs-mmap
 chown "${UID}":"${GID}" -R "${UHOME}/.ssh" /var/run/xpra /tmp/spacemacs-mmap
 
 export XDG_RUNTIME_DIR=/tmp/xdg
-mkdir -p "${XDG_RUNTIME_DIR}"
-chown "${UID}":"${GID}" "${XDG_RUNTIME_DIR}"
+mkdir -p "${XDG_RUNTIME_DIR}" "/run/user/${UID}/"
+chown "${UID}":"${GID}" "${XDG_RUNTIME_DIR}" "/run/user/${UID}/"
 
 if [ "$START_XORG" == "yes" ]; then
 	chmod 1777 /tmp/.X11-unix

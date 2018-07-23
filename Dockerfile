@@ -1,9 +1,11 @@
-FROM alpine
+FROM alpine:edge
 
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
 ENV XPRA_VERSION=2.3.2
+
+COPY video_dummy_patches /tmp/video_dummy_patches
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -45,29 +47,37 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-gtkglext \
     py-idna \
     py-ipaddress \
+    py-lz4 \
     py-netifaces \
     py-numpy \
     py-pillow \
+    py-pycryptodome \
     py-rencode \
     py-six \
+    py2-xxhash \
     shared-mime-info \
+    websockify \
     x264 \
-    xf86-video-dummy \
     xhost \
     xorg-server \
 # Meta build-deps
     && apk --no-cache add --virtual build-deps \
+    alpine-sdk \
+    autoconf \
+    automake \
     build-base \
     cython-dev \
-    git \
     ffmpeg-dev \
     flac-dev \
+    git \
     libc-dev \
+    libtool \
     libvpx-dev \
     libxcomposite-dev \
     libxdamage-dev \
     libxext-dev \
     libxfixes-dev \
+    libxi-dev \
     libxkbfile-dev \
     libxrandr-dev \
     libxtst-dev \
@@ -80,58 +90,78 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-numpy-dev \
     py2-pip \
     python-dev \
+    util-macros \
     which \
     x264-dev \
+    xorg-server-dev \
+    xorgproto \
     xvidcore-dev \
-# PIP
-    && pip install \
-    lz4 \
-    pycrypto \
-    websockify \
-    xxhash \
+    xz \
 # Xpra
     && curl https://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz | tar -xJ \
     && cd xpra-$XPRA_VERSION \
     && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
     >> etc/xpra/xorg.conf \
     && python2 setup.py install \
-        --verbose \
-        --with-Xdummy \
-        --with-Xdummy_wrapper \
-        --with-bencode \
-        --with-clipboard \
-        --with-csc_swscale \
-        --with-cython_bencode \
-        --with-dbus \
-        --with-enc_ffmpeg \
-        --with-enc_x264 \
-        --with-gtk2 \
-        --with-gtk_x11 \
-        --with-pillow \
-        --with-server \
-        --with-vpx \
-        --with-vsock \
-        --with-x11 \
-        --without-client \
-        --without-csc_libyuv \
-        --without-dec_avcodec2 \
-        --without-enc_x265 \
-        --without-gtk3 \
-        --without-mdns \
-        --without-opengl \
-        --without-printing \
-        --without-sound \
-        --without-strict \
-        --without-webcam \
+    --verbose \
+    --with-Xdummy \
+    --with-Xdummy_wrapper \
+    --with-bencode \
+    --with-clipboard \
+    --with-csc_swscale \
+    --with-cython_bencode \
+    --with-dbus \
+    --with-enc_ffmpeg \
+    --with-enc_x264 \
+    --with-gtk2 \
+    --with-gtk_x11 \
+    --with-pillow \
+    --with-server \
+    --with-vpx \
+    --with-vsock \
+    --with-x11 \
+    --without-client \
+    --without-csc_libyuv \
+    --without-cuda_kernels \
+    --without-cuda_rebuild \
+    --without-dec_avcodec2 \
+    --without-enc_x265 \
+    --without-gtk3 \
+    --without-mdns \
+    --without-opengl \
+    --without-printing \
+    --without-sound \
+    --without-strict \
+    --without-uinput \
+    --without-webcam \
     && mkdir -p /var/run/xpra/ \
     && cd ../.. \
     && rm -fr xpra-$XPRA_VERSION \
 # su-exec
-    && git clone https://github.com/ncopa/su-exec.git /tmp/su-exec \
+    && git clone https://github.com/ncopa/su-exec.git \
+    /tmp/su-exec \
     && cd /tmp/su-exec \
     && make \
     && chmod 770 su-exec \
     && mv su-exec /usr/sbin/ \
+# xf86-video-dummy
+    && git clone https://github.com/JAremko/xf86-video-dummy.git \
+    /tmp/xf86-video-dummy \
+    && cd /tmp/xf86-video-dummy \
+    && git apply \
+    /tmp/video_dummy_patches/Constant-DPI.patch \
+    /tmp/video_dummy_patches/fix-pointer-limits.patch \
+    /tmp/video_dummy_patches/30-bit-depth.patch \
+    && aclocal \
+    && autoconf \
+    && automake \
+    --add-missing \
+    --force-missing \
+    && ./configure \
+    && make \
+    && make install \
+    && mv /usr/local/lib/xorg/modules/drivers/dummy_drv.so \
+    /usr/lib/xorg/modules/drivers/ \
 # Cleanup
     && apk del build-deps \
     && rm -rf /var/cache/* /tmp/* /var/log/* ~/.cache \
