@@ -15,7 +15,7 @@ fi
 # Create HOME dir
 if [ -d "${UHOME}" ]
 then
-  home_owner="$(stat --format '%U' ${UHOME})"
+  home_owner="$(stat -c '%U' ${UHOME})"
   if [ $(id -u ${UNAME}) -ne $(id -u ${home_owner}) ]; then
     chown "${UID}":"${GID}" -R ${UHOME}
   fi
