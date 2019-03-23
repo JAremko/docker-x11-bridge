@@ -16,4 +16,5 @@ TMPDIR=/tmp/spacemacs-mmap xpra $XPRA_MODE $DISPLAY\
   --sharing="${XPRA_SHARING}"\
   --speaker=no\
   --start-child="$@"\
+  --exit-with-children \
   --webcam=no
