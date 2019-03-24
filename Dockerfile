@@ -3,7 +3,7 @@ FROM alpine:edge
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=2.3.2
+ENV XPRA_VERSION=2.5rc5
 
 COPY video_dummy_patches /tmp/video_dummy_patches
 
