@@ -3,9 +3,12 @@ FROM alpine:edge
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
-ENV XPRA_VERSION=2.3.2
+# NOTE: Don't forget to update xpra_sha file:
+#       sha1sum  "xpra-${XPRA_VERSION}.tar.xz" > xpra_sha
+ENV XPRA_VERSION=2.5
 
 COPY video_dummy_patches /tmp/video_dummy_patches
+COPY xpra_sha /tmp/
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
@@ -60,6 +63,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     autoconf \
     automake \
     build-base \
+    coreutils \
     cython-dev \
     ffmpeg-dev \
     flac-dev \
@@ -78,11 +82,13 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     linux-headers \
     lz4-dev \
     musl-utils \
+    npm \
     opus-dev \
     py-dbus-dev \
     py-gtk-dev \
     py-gtkglext-dev \
     py-numpy-dev \
+    py-yuicompressor \
     py2-pip \
     python-dev \
     util-macros \
@@ -92,9 +98,13 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xorgproto \
     xvidcore-dev \
     xz \
+    && npm install uglify-js@2 -g \
 # Xpra
-    && curl https://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz | tar -xJ \
-    && cd xpra-$XPRA_VERSION \
+    && cd /tmp \
+    && curl http://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz -o xpra.tar.xz \
+    && sha1sum -c xpra_sha \
+    && tar -xf "xpra.tar.xz" \
+    && cd "xpra-${XPRA_VERSION}" \
     && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
     >> etc/xpra/xorg.conf \
     && python2 setup.py install \
@@ -130,8 +140,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --without-uinput \
     --without-webcam \
     && mkdir -p /var/run/xpra/ \
-    && cd ../.. \
-    && rm -fr xpra-$XPRA_VERSION \
+    && cd /tmp \
 # su-exec
     && git clone https://github.com/ncopa/su-exec.git \
     /tmp/su-exec \
