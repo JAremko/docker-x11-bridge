@@ -89,7 +89,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-gtk-dev \
     py-gtkglext-dev \
     py-numpy-dev \
-    py-paramiko \
     py-yuicompressor \
     python-dev \
     util-macros \
@@ -100,8 +99,8 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xvidcore-dev \
     xz \
     && npm install uglify-js@2 -g \
-    && pip2 install git+https://github.com/Legrandin/pycryptodome.git \
-                    git+https://github.com/tuomasjjrasanen/python-uinput.git \
+    && pip2 install git+https://github.com/paramiko/paramiko.git \
+                    git+https://github.com/Legrandin/pycryptodome.git \
                     git+https://github.com/dsoprea/PyInotify.git \
                     git+https://github.com/novnc/websockify.git \
 # Xpra
@@ -127,7 +126,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --with-gtk_x11 \
     --with-pillow \
     --with-server \
-    --with-uinput \
     --with-vpx \
     --with-vsock \
     --with-x11 \
@@ -141,6 +139,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --without-mdns \
     --without-opengl \
     --without-printing \
+    --without-uinput \
     --without-sound \
     --without-strict \
     --without-webcam \
