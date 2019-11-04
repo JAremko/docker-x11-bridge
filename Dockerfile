@@ -1,18 +1,18 @@
-FROM alpine:edge
+FROM alpine:3.10
 
 MAINTAINER JAremko <w3techplaygound@gmail.com>
 
 # Kudos to @urzds for Xpra building example
 # NOTE: Don't forget to update xpra_sha file:
 #       sha1sum  "xpra-${XPRA_VERSION}.tar.xz" > xpra_sha
-ENV XPRA_VERSION=2.5
+ENV XPRA_VERSION=3.0.1
 
 COPY video_dummy_patches /tmp/video_dummy_patches
 COPY xpra_sha /tmp/
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     >> /etc/apk/repositories \
-    && echo "http://nl.alpinelinux.org/alpine/edge/community" \
+    && echo "http://nl.alpinelinux.org/alpine/v3.10/community" \
     >> /etc/apk/repositories \
 # Deps
     && apk --no-cache upgrade \
@@ -49,7 +49,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-netifaces \
     py-numpy \
     py-pillow \
-    py-pycryptodome \
     py-rencode \
     py-six \
     py2-xxhash \
@@ -88,6 +87,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-gtk-dev \
     py-gtkglext-dev \
     py-numpy-dev \
+    py-paramiko \
     py-yuicompressor \
     py2-pip \
     python-dev \
@@ -98,6 +98,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xorgproto \
     xvidcore-dev \
     xz \
+    && pip install git+https://github.com/Legrandin/pycryptodome.git \
     && npm install uglify-js@2 -g \
 # Xpra
     && cd /tmp \
