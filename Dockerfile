@@ -52,6 +52,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-pillow \
     py-rencode \
     py-six \
+    py2-pip \
     py2-xxhash \
     shared-mime-info \
     x264 \
@@ -90,7 +91,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-numpy-dev \
     py-paramiko \
     py-yuicompressor \
-    py2-pip \
     python-dev \
     util-macros \
     which \
@@ -99,19 +99,11 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xorgproto \
     xvidcore-dev \
     xz \
-    && git clone https://github.com/Legrandin/pycryptodome.git \
-                 /tmp/pycryptodome \
-    && cd /tmp/pycryptodome && python2 setup.py install \
-    && git clone https://github.com/tuomasjjrasanen/python-uinput.git \
-                 /tmp/uinput \
-    && cd /tmp/uinput && python2 setup.py install \
-    && git clone https://github.com/dsoprea/PyInotify.git \
-                 /tmp/PyInotify \
-    && cd /tmp/PyInotify && python2 setup.py install \
     && npm install uglify-js@2 -g \
-    && git clone https://github.com/novnc/websockify.git \
-                 /tmp/websockify \
-    && cd /tmp/websockify && python2 setup.py install \
+    && pip2 install git+https://github.com/Legrandin/pycryptodome.git \
+                    git+https://github.com/tuomasjjrasanen/python-uinput.git \
+                    git+https://github.com/dsoprea/PyInotify.git \
+                    git+https://github.com/novnc/websockify.git \
 # Xpra
     && cd /tmp \
     && curl http://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz -o xpra.tar.xz \
