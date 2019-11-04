@@ -20,6 +20,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     bash \
     curl \
     dbus-x11 \
+    inotify-tools \
     ffmpeg \
     gstreamer \
     libvpx \
@@ -53,7 +54,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     py-six \
     py2-xxhash \
     shared-mime-info \
-    websockify \
     x264 \
     xhost \
     xorg-server \
@@ -64,6 +64,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     build-base \
     coreutils \
     cython-dev \
+    inotify-tools-dev \
     ffmpeg-dev \
     flac-dev \
     git \
@@ -98,8 +99,19 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xorgproto \
     xvidcore-dev \
     xz \
-    && pip install git+https://github.com/Legrandin/pycryptodome.git \
+    && git clone https://github.com/Legrandin/pycryptodome.git \
+                 /tmp/pycryptodome \
+    && cd /tmp/pycryptodome && python2 setup.py install \
+    && git clone https://github.com/tuomasjjrasanen/python-uinput.git \
+                 /tmp/uinput \
+    && cd /tmp/uinput && python2 setup.py install \
+    && git clone https://github.com/dsoprea/PyInotify.git \
+                 /tmp/PyInotify \
+    && cd /tmp/PyInotify && python2 setup.py install \
     && npm install uglify-js@2 -g \
+    && git clone https://github.com/novnc/websockify.git \
+                 /tmp/websockify \
+    && cd /tmp/websockify && python2 setup.py install \
 # Xpra
     && cd /tmp \
     && curl http://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz -o xpra.tar.xz \
@@ -123,6 +135,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --with-gtk_x11 \
     --with-pillow \
     --with-server \
+    --with-uinput \
     --with-vpx \
     --with-vsock \
     --with-x11 \
@@ -138,7 +151,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --without-printing \
     --without-sound \
     --without-strict \
-    --without-uinput \
     --without-webcam \
     && mkdir -p /var/run/xpra/ \
     && cd /tmp \

@@ -12,7 +12,8 @@ docker run -d \
  -e MODE="tcp" \
  -e XPRA_HTML="yes" \
  -e DISPLAY=:14 \
- -p 10000:10000 \
+ -e XPRA_PASSWORD=111 \
+ --net=host \
  jare/x11-bridge
 
 docker run -d \
@@ -27,7 +28,7 @@ docker run -d \
  -e DISPLAY=:14 \
  jare/emacs emacs
 ```
-Then visit `http://localhost:10000/index.html?encoding=rgb32`
+Then visit `http://localhost:10000/index.html?encoding=rgb32&password=111`
 See `http://localhost:10000/connect.html` for options
 
 ### Or via ssh:
@@ -35,9 +36,9 @@ See `http://localhost:10000/connect.html` for options
 docker run -d \
  --name x11-bridge \
  -e MODE="ssh" \
- -p 22:22 \
  -v ~/.ssh/pub_rsa:/etc/pub-keys/me.pub \
  -e DISPLAY=:14 \
+ --net=host \
  jare/x11-bridge
 
 docker run -d \
