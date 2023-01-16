@@ -1,7 +1,5 @@
 FROM alpine:3.10
 
-MAINTAINER JAremko <w3techplaygound@gmail.com>
-
 # Kudos to @urzds for Xpra building example
 # NOTE: Don't forget to update xpra_sha file:
 #       sha1sum  "xpra-${XPRA_VERSION}.tar.xz" > xpra_sha
