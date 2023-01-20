@@ -98,10 +98,10 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
 RUN cd /tmp \
     && curl http://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz -o xpra.tar.xz \
     && sha1sum -c xpra_sha \
-    && tar -xf "xpra.tar.xz" \
-    && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
-    >> fs/etc/xpra/xorg.conf
+    && tar -xf "xpra.tar.xz"
 RUN cd "/tmp/xpra-${XPRA_VERSION}" \
+    && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
+    >> fs/etc/xpra/xorg.conf \
     && python3 setup.py install \
     --verbose \
     --with-Xdummy \
