@@ -1,9 +1,9 @@
-FROM alpine:3.10
+FROM alpine:3.17
 
 # Kudos to @urzds for Xpra building example
 # NOTE: Don't forget to update xpra_sha file:
 #       sha1sum  "xpra-${XPRA_VERSION}.tar.xz" > xpra_sha
-ENV XPRA_VERSION=3.0.1
+ENV XPRA_VERSION=4.4.3
 
 COPY video_dummy_patches /tmp/video_dummy_patches
 COPY xpra_sha /tmp/
@@ -34,24 +34,17 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     openrc \
     openssh \
     openssl \
-    py-asn1 \
-    py-cffi \
-    py-cryptography \
-    py-dbus \
-    py-enum34 \
-    py-gobject3 \
-    py-gtk \
-    py-gtkglext \
-    py-idna \
-    py-ipaddress \
-    py-lz4 \
-    py-netifaces \
-    py-numpy \
-    py-pillow \
-    py-rencode \
-    py-six \
-    py2-pip \
-    py2-xxhash \
+    py3-asn1 \
+    py3-dbus \
+    py3-gobject3 \
+    py3-idna \
+    py3-ipaddress \
+    py3-lz4 \
+    py3-netifaces \
+    py3-numpy \
+    py3-pillow \
+    py3-rencode \
+    py3-six \
     shared-mime-info \
     x264 \
     xhost \
@@ -62,11 +55,11 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     automake \
     build-base \
     coreutils \
-    cython-dev \
     inotify-tools-dev \
     ffmpeg-dev \
     flac-dev \
     git \
+    gtk+3.0-dev \
     libc-dev \
     libtool \
     libvpx-dev \
@@ -77,18 +70,20 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     libxi-dev \
     libxkbfile-dev \
     libxrandr-dev \
+    libxres-dev \
     libxtst-dev \
     linux-headers \
     lz4-dev \
     musl-utils \
     npm \
     opus-dev \
-    py-dbus-dev \
-    py-gtk-dev \
-    py-gtkglext-dev \
-    py-numpy-dev \
-    py-yuicompressor \
-    python-dev \
+    pandoc \
+    py3-dbus-dev \
+    py3-gobject3-dev \
+    py3-numpy-dev \
+    py3-pip \
+    py3-yuicompressor \
+    python3-dev \
     util-macros \
     which \
     x264-dev \
@@ -97,19 +92,17 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xvidcore-dev \
     xz \
     && npm install uglify-js@2 -g \
-    && pip2 install git+https://github.com/paramiko/paramiko.git \
-                    git+https://github.com/Legrandin/pycryptodome.git \
-                    git+https://github.com/dsoprea/PyInotify.git \
-                    git+https://github.com/novnc/websockify.git \
+    && pip3 install -U wheel pip \
+    && pip3 install paramiko pycryptodome PyInotify websockify cython \
 # Xpra
     && cd /tmp \
     && curl http://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz -o xpra.tar.xz \
     && sha1sum -c xpra_sha \
     && tar -xf "xpra.tar.xz" \
-    && cd "xpra-${XPRA_VERSION}" \
     && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
-    >> etc/xpra/xorg.conf \
-    && python2 setup.py install \
+    >> fs/etc/xpra/xorg.conf \
+    && cd "/tmp/xpra-${XPRA_VERSION}" \
+    && python3 setup.py install \
     --verbose \
     --with-Xdummy \
     --with-Xdummy_wrapper \
@@ -120,7 +113,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --with-dbus \
     --with-enc_ffmpeg \
     --with-enc_x264 \
-    --with-gtk2 \
+    --with-gtk3 \
     --with-gtk_x11 \
     --with-pillow \
     --with-server \
@@ -133,7 +126,6 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --without-cuda_rebuild \
     --without-dec_avcodec2 \
     --without-enc_x265 \
-    --without-gtk3 \
     --without-mdns \
     --without-opengl \
     --without-printing \
@@ -158,6 +150,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     /tmp/video_dummy_patches/Constant-DPI.patch \
     /tmp/video_dummy_patches/fix-pointer-limits.patch \
     /tmp/video_dummy_patches/30-bit-depth.patch \
+    && libtoolize \
     && aclocal \
     && autoconf \
     && automake \
@@ -177,9 +170,9 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     && chmod 0755 /var/run/sshd \
     && rc-update add sshd \
     && rc-status \
-    && touch /run/openrc/softlevel \
-    && /etc/init.d/sshd start > /dev/null 2>&1 \
-    && /etc/init.d/sshd stop > /dev/null 2>&1
+    && touch /run/openrc/softlevel
+# RUN /etc/init.d/sshd start \
+#     && /etc/init.d/sshd stop
 
 # docker run ... --volumes-from <ME> -e DISPLAY=<MY_DISPLAY> ... firefox
 VOLUME /tmp/.X11-unix
