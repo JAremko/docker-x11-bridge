@@ -93,15 +93,15 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     xz \
     && npm install uglify-js@2 -g \
     && pip3 install -U wheel pip \
-    && pip3 install paramiko pycryptodome PyInotify websockify cython \
+    && pip3 install paramiko pycryptodome PyInotify websockify cython
 # Xpra
-    && cd /tmp \
+RUN cd /tmp \
     && curl http://www.xpra.org/src/xpra-$XPRA_VERSION.tar.xz -o xpra.tar.xz \
     && sha1sum -c xpra_sha \
     && tar -xf "xpra.tar.xz" \
     && echo -e 'Section "Module"\n  Load "fb"\n  EndSection' \
-    >> fs/etc/xpra/xorg.conf \
-    && cd "/tmp/xpra-${XPRA_VERSION}" \
+    >> fs/etc/xpra/xorg.conf
+RUN cd "/tmp/xpra-${XPRA_VERSION}" \
     && python3 setup.py install \
     --verbose \
     --with-Xdummy \
@@ -134,16 +134,16 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     --without-strict \
     --without-webcam \
     && mkdir -p /var/run/xpra/ \
-    && cd /tmp \
+    && cd /tmp
 # su-exec
-    && git clone https://github.com/ncopa/su-exec.git \
+RUN git clone https://github.com/ncopa/su-exec.git \
     /tmp/su-exec \
     && cd /tmp/su-exec \
     && make \
     && chmod 770 su-exec \
-    && mv su-exec /usr/sbin/ \
+    && mv su-exec /usr/sbin/
 # xf86-video-dummy
-    && git clone https://github.com/JAremko/xf86-video-dummy.git \
+RUN git clone https://github.com/JAremko/xf86-video-dummy.git \
     /tmp/xf86-video-dummy \
     && cd /tmp/xf86-video-dummy \
     && git apply \
@@ -160,9 +160,9 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     && make \
     && make install \
     && mv /usr/local/lib/xorg/modules/drivers/dummy_drv.so \
-    /usr/lib/xorg/modules/drivers/ \
+    /usr/lib/xorg/modules/drivers/
 # Cleanup
-    && apk del build-deps \
+RUN apk del build-deps \
     && rm -rf /var/cache/* /tmp/* /var/log/* ~/.cache \
     && mkdir -p /var/cache/apk \
 # SSH
