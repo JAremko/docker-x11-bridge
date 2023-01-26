@@ -1,5 +1,6 @@
 FROM alpine:3.17
-RUN apk add bash xpra
+RUN apk add bash git py3-cairo py3-xdg su-exec xhost xpra
+RUN mkdir /tmp/xpra-html5 && cd /tmp/xpra-html5 && git clone https://github.com/Xpra-org/xpra-html5 && cd xpra-html5 && ./setup.py install && cd / && rm -rf /tmp/xpra-html5
 
 # docker run ... --volumes-from <ME> -e DISPLAY=<MY_DISPLAY> ... firefox
 VOLUME /tmp/.X11-unix
@@ -24,7 +25,8 @@ ENV DISPLAY=":14"            \
     XPRA_KEYBOARD_SYNC="yes" \
     XPRA_MMAP="yes"          \
     XPRA_SHARING="yes"       \
-    XPRA_TCP_PORT="10000"
+    XPRA_TCP_PORT="10000"    \
+    XPRA_WS_PORT="10001"
 
 ENV GID="1000"         \
     GNAME="xpra"       \
@@ -33,7 +35,7 @@ ENV GID="1000"         \
     UID="1000"         \
     UNAME="xpra"
 
-EXPOSE $SSHD_PORT $XPRA_TCP_PORT
+EXPOSE $SSHD_PORT $XPRA_TCP_PORT $XPRA_WS_PORT
 
 ENTRYPOINT ["/usr/local/bin/run"]
 CMD ["xhost +"]

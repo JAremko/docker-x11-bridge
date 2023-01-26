@@ -1,5 +1,5 @@
 #!/bin/bash
-TMPDIR=/tmp/spacemacs-mmap xpra $XPRA_MODE $DISPLAY\
+xpra $XPRA_MODE $DISPLAY\
   --compress="${XPRA_COMPRESS}"\
   --dpi="${XPRA_DPI}"\
   --encoding="${XPRA_ENCODING}"\
@@ -8,6 +8,7 @@ TMPDIR=/tmp/spacemacs-mmap xpra $XPRA_MODE $DISPLAY\
   --microphone=no\
   --mmap="${XPRA_MMAP}"\
   --no-daemon\
+  --notifications=no\
   --printing=no\
   --pulseaudio=no\
   --readonly="${XPRA_READONLY}"\

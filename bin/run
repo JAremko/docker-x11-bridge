@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Create dbus unique id
+apk add dbus
+dbus-uuidgen --ensure
+
 # Create group
 egrep -i "^${GNAME}" /etc/group;
 if [ $? -ne 0 ]; then
@@ -30,25 +34,22 @@ mkdir -p "${UHOME}/.ssh"
 find /etc/pub-keys -type f -name *.pub -exec cat "{}" >> "${UHOME}/.ssh/authorized_keys" \;
 chmod 600 -R "${UHOME}/.ssh"
 chmod 700 "${UHOME}/.ssh"
-
-# Xpra mmap
-mkdir -p /tmp/spacemacs-mmap
-chown "${UID}":"${GID}" -R "${UHOME}/.ssh" /var/run/xpra /tmp/spacemacs-mmap
-
 export XDG_RUNTIME_DIR=/tmp/xdg
 mkdir -p "${XDG_RUNTIME_DIR}" "/run/user/${UID}/"
 chown "${UID}":"${GID}" "${XDG_RUNTIME_DIR}" "/run/user/${UID}/"
 
 if [ "$START_XORG" == "yes" ]; then
 	chmod 1777 /tmp/.X11-unix
-	Xorg\
+	/usr/libexec/Xorg\
+	  -noreset\
+    -novtswitch\
+	  -nolisten tcp\
+    +extension GLX\
 	  +extension RANDR\
 	  +extension RENDER\
 	  -config /etc/xpra/xorg.conf\
 	  -dpi $XORG_DPI\
 	  -logfile /tmp/Xorg.log\
-	  -nolisten tcp\
-	  -noreset\
 	  -xinerama &
 fi
 
