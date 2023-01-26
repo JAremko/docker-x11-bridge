@@ -21,6 +21,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     inotify-tools \
     ffmpeg \
     gstreamer \
+    gtk+3.0 \
     libvpx \
     libxcomposite \
     libxdamage \
